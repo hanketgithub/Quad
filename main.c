@@ -19,12 +19,18 @@
 
 #include "Quad.h"
 
+#define TIMING  1
+#if (TIMING)
+struct timeval tv1, tv2, res;
+#endif
+
 static uint8_t ImgY[WIDTH * HEIGHT];
 static uint8_t ImgU[WIDTH * HEIGHT / 4];
 static uint8_t ImgV[WIDTH * HEIGHT / 4];
 static uint8_t QuadY[2 * WIDTH * 2 *  HEIGHT];
 static uint8_t QuadU[WIDTH * HEIGHT];
 static uint8_t QuadV[WIDTH * HEIGHT];
+
 
 int main(int argc, const char * argv[]) {
     int fd_rd;
@@ -49,9 +55,12 @@ int main(int argc, const char * argv[]) {
         perror(argv[1]);
         exit(EXIT_FAILURE);
     }
-    fd_wr = open("quad.yuv",
-                 O_WRONLY | O_CREAT | O_TRUNC,
-                 S_IRUSR);
+    fd_wr = open
+            (
+             "quad.yuv",
+             O_WRONLY | O_CREAT | O_TRUNC,
+             S_IRUSR
+            );
     
     rd_sz = 0;
     w = WIDTH;
@@ -69,7 +78,11 @@ int main(int argc, const char * argv[]) {
         
         rd_sz = read(fd_rd, ImgV, sizeof(ImgV));
         if (rd_sz <= 0) break;        
-        
+
+        #if (TIMING)
+        gettimeofday(&tv1, NULL);
+        #endif
+            
         quad_u
         (
             h,
@@ -102,7 +115,14 @@ int main(int argc, const char * argv[]) {
             (PixelRowC_t *) ImgV,
             (PixelRowC_t *) ImgV
         );
+
+        #if (TIMING)
+        gettimeofday(&tv2, NULL);
+        timersub(&tv2, &tv1, &res);
         
+        fprintf(stderr, "Total time = %d seconds %d microsecs\n",
+                res.tv_sec, res.tv_usec);
+        #endif        
         
         write(fd_wr, QuadY, sizeof(QuadY));
         write(fd_wr, QuadU, sizeof(QuadU));
