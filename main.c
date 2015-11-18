@@ -30,8 +30,11 @@ int main(int argc, const char * argv[]) {
     int fd_rd;
     int fd_wr;
     
+    ssize_t rd_sz;
+        
     int w;
     int h;
+    
 
     if (argc < 2)
     {
@@ -50,51 +53,64 @@ int main(int argc, const char * argv[]) {
                  O_WRONLY | O_CREAT | O_TRUNC,
                  S_IRUSR);
     
+    rd_sz = 0;
     w = WIDTH;
     h = HEIGHT;
     
-    read(fd_rd, ImgY, sizeof(ImgY));
-    read(fd_rd, ImgU, sizeof(ImgU));
-    read(fd_rd, ImgV, sizeof(ImgV));
+    fprintf(stderr, "Processing: ");
     
-    
-    quad_u
-    (
-        h,
-        (PixelRowY_t *) QuadY,
-        (PixelRowY_t *) ImgY,
-        (PixelRowY_t *) ImgY,
-        (PixelRowY_t *) ImgY,
-        (PixelRowY_t *) ImgY
-    );
-    
-    
-    
-    quad_c
-    (
-        h / 2,
-        (PixelRowC_t *) QuadU,
-        (PixelRowC_t *) ImgU,
-        (PixelRowC_t *) ImgU,
-        (PixelRowC_t *) ImgU,
-        (PixelRowC_t *) ImgU
-    );
-    
-    
-    quad_c
-    (
-        h / 2,
-        (PixelRowC_t *) QuadV,
-        (PixelRowC_t *) ImgV,
-        (PixelRowC_t *) ImgV,
-        (PixelRowC_t *) ImgV,
-        (PixelRowC_t *) ImgV
-    );
-    
-    
-    write(fd_wr, QuadY, sizeof(QuadY));
-    write(fd_wr, QuadU, sizeof(QuadU));
-    write(fd_wr, QuadV, sizeof(QuadV));
+    while (1)
+    {
+        rd_sz = read(fd_rd, ImgY, sizeof(ImgY));
+        if (rd_sz <= 0) break;
+        
+        rd_sz = read(fd_rd, ImgU, sizeof(ImgU));
+        if (rd_sz <= 0) break;        
+        
+        rd_sz = read(fd_rd, ImgV, sizeof(ImgV));
+        if (rd_sz <= 0) break;        
+        
+        quad_u
+        (
+            h,
+            (PixelRowY_t *) QuadY,
+            (PixelRowY_t *) ImgY,
+            (PixelRowY_t *) ImgY,
+            (PixelRowY_t *) ImgY,
+            (PixelRowY_t *) ImgY
+        );
+        
+        
+        
+        quad_c
+        (
+            h / 2,
+            (PixelRowC_t *) QuadU,
+            (PixelRowC_t *) ImgU,
+            (PixelRowC_t *) ImgU,
+            (PixelRowC_t *) ImgU,
+            (PixelRowC_t *) ImgU
+        );
+        
+        
+        quad_c
+        (
+            h / 2,
+            (PixelRowC_t *) QuadV,
+            (PixelRowC_t *) ImgV,
+            (PixelRowC_t *) ImgV,
+            (PixelRowC_t *) ImgV,
+            (PixelRowC_t *) ImgV
+        );
+        
+        
+        write(fd_wr, QuadY, sizeof(QuadY));
+        write(fd_wr, QuadU, sizeof(QuadU));
+        write(fd_wr, QuadV, sizeof(QuadV));
+        
+        fputc('.', stderr);
+        fflush(stderr);
+    }
     
     close(fd_rd);
     close(fd_wr);
