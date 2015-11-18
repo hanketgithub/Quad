@@ -58,31 +58,38 @@ int main(int argc, const char * argv[]) {
     read(fd_rd, ImgV, sizeof(ImgV));
     
     
-    quad_u(h,
-           (PixelRowY_t *) QuadY,
-           (PixelRowY_t *) ImgY,
-           (PixelRowY_t *) ImgY,
-           (PixelRowY_t *) ImgY,
-           (PixelRowY_t *) ImgY
-           );
+    quad_u
+    (
+        h,
+        (PixelRowY_t *) QuadY,
+        (PixelRowY_t *) ImgY,
+        (PixelRowY_t *) ImgY,
+        (PixelRowY_t *) ImgY,
+        (PixelRowY_t *) ImgY
+    );
     
     
     
-    quad_c(h / 2,
-           (PixelRowC_t *) QuadU,
-           (PixelRowC_t *) ImgU,
-           (PixelRowC_t *) ImgU,
-           (PixelRowC_t *) ImgU,
-           (PixelRowC_t *) ImgU
-           );
+    quad_c
+    (
+        h / 2,
+        (PixelRowC_t *) QuadU,
+        (PixelRowC_t *) ImgU,
+        (PixelRowC_t *) ImgU,
+        (PixelRowC_t *) ImgU,
+        (PixelRowC_t *) ImgU
+    );
     
     
-    quad_c(h / 2,
-           (PixelRowC_t *) QuadV,
-           (PixelRowC_t *) ImgV,
-           (PixelRowC_t *) ImgV,
-           (PixelRowC_t *) ImgV,
-           (PixelRowC_t *) ImgV);
+    quad_c
+    (
+        h / 2,
+        (PixelRowC_t *) QuadV,
+        (PixelRowC_t *) ImgV,
+        (PixelRowC_t *) ImgV,
+        (PixelRowC_t *) ImgV,
+        (PixelRowC_t *) ImgV
+    );
     
     
     write(fd_wr, QuadY, sizeof(QuadY));

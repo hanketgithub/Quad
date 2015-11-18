@@ -24,6 +24,7 @@ typedef struct
     uint8_t data[WIDTH / 2];
 } PixelRowC_t;
 
+
 void quad_u
 (
         uint32_t h,
